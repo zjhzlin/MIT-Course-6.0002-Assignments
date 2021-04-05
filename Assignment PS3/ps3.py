@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Problem Set 3: Simulating robots
-# Name:
+# Name: Lynn Zhang
 # Collaborators (discussion):
 # Time:
 
