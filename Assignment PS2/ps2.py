@@ -157,7 +157,6 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
                 # recursively solve the rest of the path, from child to dest
                 new_best_path = get_best_path(digraph, child, end, updated_path,
                                               max_dist_outdoors, best_dist, best_path)
-                # if new_best_path != None and new_best_path[1] < best_dist:
                 if new_best_path:
                     if not best_dist or new_best_path[1] <= best_dist:  # if distance on current path shorter than best one,
                 #     print('Update the best path')
