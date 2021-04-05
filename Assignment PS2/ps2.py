@@ -2,18 +2,18 @@
 # Graph optimization
 # Name: Lynn Zhang
 # Collaborators:
-# Time:
-# 2021-04-03 09:53 - 10:19 problem 2b & 2c
-#            10:30 - 11:30 problem 3 stuck in completing the function, graph thinking
-#            13:33 - 14:30 debugging path - embedded list - list is mutable! need to use copy
+# Time: 399min
+# 2021-04-03 09:55 - 10:17 22min problem 2b & 2c
+#            10:30 - 11:30 60min problem 3 stuck in completing the function, graph thinking
+#            13:33 - 14:30 57min debugging path - embedded list - list is mutable! need to use copy
 #                          the path in the recursive need to pass the empty one
 #                          still not that clear.
 # 2021-04-04 60min stuck in the get the best path function
-# 2021-04-05 06:00 - 09:00 debugging line by line
+# 2021-04-05 06:00 - 09:00 180min debugging line by line
 #        finally solved! - list is mutable. when updating the path, need to pay attention
 #         wrong: path[0] += [start]           vs    correct: path[0] = path[0] + [start]
 #           += doesn't create a new list;            + create a new list
-#             09:30 -
+#             09:30 - 09:50 20min
 
 # Finding shortest paths through MIT buildings
 #
@@ -79,8 +79,8 @@ def load_map(map_filename):
 
 # Problem 2c: Testing load_map
 # Include the lines used to test load_map below, but comment them out
-TEST_FILENAME = 'test_load_map.txt'
-# TEST_FILENAME = 'mit_map.txt'
+# TEST_FILENAME = 'test_load_map.txt'
+TEST_FILENAME = 'mit_map.txt'
 testdigraph = load_map(TEST_FILENAME)
 print(testdigraph)
 
@@ -152,14 +152,14 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
             updated_path = [path[0], distance, outdoors]
             # if this path is longer than the best path, then no need to explore further
             # also if outdoor distance is bigger than max, no need to explore further
-            if best_path == None or child_edge.get_total_distance() < best_dist \
-                    and distance < best_dist:
+            if best_path == None or child_edge.get_total_distance() <= best_dist \
+                    and distance <= best_dist:
                 # recursively solve the rest of the path, from child to dest
                 new_best_path = get_best_path(digraph, child, end, updated_path,
                                               max_dist_outdoors, best_dist, best_path)
                 # if new_best_path != None and new_best_path[1] < best_dist:
                 if new_best_path:
-                    if not best_dist or new_best_path[1] < best_dist:  # if distance on current path shorter than best one,
+                    if not best_dist or new_best_path[1] <= best_dist:  # if distance on current path shorter than best one,
                 #     print('Update the best path')
                         best_path = new_best_path[0]
                         best_dist = new_best_path[1]
@@ -203,10 +203,18 @@ def directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors):
         max_dist_outdoors constraints, then raises a ValueError.
     """
     # directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors)
+    # initialzing variables
+    path = [[],0,0]
+    best_dist = max_total_dist
+    best_path = []
+    best_path_found = get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist, best_path)
+    if best_path_found[0] == []:
+        raise ValueError('No best path found')
+    return best_path_found[0]
 
+# print(directed_dfs(testdigraph, '10','32',100,99999))
 
-
-# ================================================================
+# ================================================================∂
 # Begin tests -- you do not need to modify anything below this line
 # ================================================================
 
