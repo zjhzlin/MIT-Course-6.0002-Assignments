@@ -9,7 +9,10 @@ solve a simple optimization problem on a graph.
 
 #### Knowledge: 
 1. The concept of graph, node, edge
-2. The manipulation of list in python - pay special attention to whether the list is copied or not
+2. To find the shortest path: 1) Depth first search; 2) Breath first search
+3. How to use recursive to implement depth first algo to find the shortest path
+
+#### Learning Notes: 
+1. The manipulation of list in python - pay special attention to whether the list is copied or not
 - append and += are the same: they add the item to the list, without producing a new list. 
 - using + adds the two lists and produces a new list. 
-3. How to use recursive to implement depth first algo to find the shortest path
