@@ -86,13 +86,10 @@ class Digraph(object):
         return '\n'.join(edge_strs)  # concat edge_strs with "\n"s between them
 
     def get_edges_for_node(self, node):
-        return self.edges[node]
+        return self.edges[node]       # list of children edges
 
     def has_node(self, node):
         return node in self.nodes
-
-    def childrenOf(self, node):
-        return self.edges[node]     # list of children edges
 
     def add_node(self, node):
         """Adds a Node object to the Digraph. Raises a ValueError if it is
@@ -113,6 +110,11 @@ class Digraph(object):
             raise ValueError('Neither node is in the graph')
         self.edges[src].append(edge)
 
+    def get_node(self, name):
+        for n in self.nodes:
+            if n.get_name() == name:
+                return n
+        raise NameError(name)
 
 # ================================================================
 # Begin tests -- you do not need to modify anything below this line

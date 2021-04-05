@@ -8,6 +8,12 @@
 #            13:33 - 14:30 debugging path - embedded list - list is mutable! need to use copy
 #                          the path in the recursive need to pass the empty one
 #                          still not that clear.
+# 2021-04-04 60min stuck in the get the best path function
+# 2021-04-05 06:00 - 09:00 debugging line by line
+#        finally solved! - list is mutable. when updating the path, need to pay attention
+#         wrong: path[0] += [start]           vs    correct: path[0] = path[0] + [start]
+#           += doesn't create a new list;            + create a new list
+#             09:30 -
 
 # Finding shortest paths through MIT buildings
 #
@@ -73,8 +79,8 @@ def load_map(map_filename):
 
 # Problem 2c: Testing load_map
 # Include the lines used to test load_map below, but comment them out
-# TEST_FILENAME = 'test_load_map.txt'
-TEST_FILENAME = 'mit_map.txt'
+TEST_FILENAME = 'test_load_map.txt'
+# TEST_FILENAME = 'mit_map.txt'
 testdigraph = load_map(TEST_FILENAME)
 print(testdigraph)
 
@@ -88,7 +94,7 @@ print(testdigraph)
 # Answer:
 # minimize distance from a to b; constraints: outdoor distance < limit
 
-# Problem 3b: Implement get_best_path
+# # Problem 3b: Implement get_best_path
 def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
                   best_path):
     """
@@ -123,6 +129,9 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then return None.
     """
+    path[0] = path[0] + [start]     #!!!!!!!!! not the same thing: path[0] += [start]  += doesn't create a new list; + create a new list
+    if path[2] > max_dist_outdoors:  # checking if current dist outdoor exceeds the max limit
+        return None
     start_node = Node(start)
     end_node = Node(end)
     # if start and end node is not valid nodes, raise error
@@ -130,41 +139,39 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
         raise ValueError('Start or End node is invalid')
     # elif start and end are the same node, update the global variables?
     elif start_node == end_node:
-        return ([end], 0)
+        return path[0], path[1]
     # else
-    else:
-        path_list = path[0].copy()
-        path_list.append(start)
-        # find children nodes
-        children_edges = digraph.childrenOf(start_node)    # list of edges
-        # if no children, then no path to destination
-        if len(children_edges) == 0:
-            return None
-        # for all the children nodes of start
-        for child_edge in children_edges:
-            child_node = child_edge.get_destination()
-            child = child_node.get_name()
-            current_path = [path_list, path[1], path[2]]
-            if child not in path[0]:  # avoid loop
-                # construct the path including that node
-                # path[0].append(child)
-                current_path[1] += child_edge.get_total_distance()
-                current_path[2] += child_edge.get_outdoor_distance()
-                # if this path is longer than the best path, then no need to explore further
-                # also if outdoor distance is bigger than max, no need to explore further
-                if best_path == None or current_path[2] < max_dist_outdoors and current_path[1] < best_dist:
-                    # recursively solve the rest of the path, from child to dest
-                    new_best_path = get_best_path(digraph, child, end, [[],0,0], max_dist_outdoors-current_path[2], best_dist, best_path)
-                    if new_best_path != None and new_best_path[1] < best_dist:
-                        best_path = current_path[0] + new_best_path[0]
-                        best_dist = current_path[1] + new_best_path[1]
-            else:
-                print('Already visited')
+    # for all the children nodes of start
+    for child_edge in digraph.edges[start_node]:
+        child_node = child_edge.get_destination()
+        child = child_node.get_name()
+        distance = path[1] + child_edge.get_total_distance()
+        outdoors = path[2] + child_edge.get_outdoor_distance()
+        if child not in path[0]:  # avoid loop
+            # construct the path including that node
+            updated_path = [path[0], distance, outdoors]
+            # if this path is longer than the best path, then no need to explore further
+            # also if outdoor distance is bigger than max, no need to explore further
+            if best_path == None or child_edge.get_total_distance() < best_dist \
+                    and distance < best_dist:
+                # recursively solve the rest of the path, from child to dest
+                new_best_path = get_best_path(digraph, child, end, updated_path,
+                                              max_dist_outdoors, best_dist, best_path)
+                # if new_best_path != None and new_best_path[1] < best_dist:
+                if new_best_path:
+                    if not best_dist or new_best_path[1] < best_dist:  # if distance on current path shorter than best one,
+                #     print('Update the best path')
+                        best_path = new_best_path[0]
+                        best_dist = new_best_path[1]
+                        print('Best path is', best_path, 'Distance is', best_dist)
+        else:
+            print('Already visited')
 
     # return the shortest path
-    return (best_path, best_dist)
+    return best_path, best_dist
 
-print(get_best_path(testdigraph, '16', '12', [[],0,0], 100000, 100000, []))
+# for test
+# print(get_best_path(testdigraph, 'a', 'e', [[],0,0], 100000, 100000, []))
 
 # Problem 3c: Implement directed_dfs
 def directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors):
@@ -197,9 +204,6 @@ def directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors):
     """
     # directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors)
 
-    best_path = get_best_path(digraph, start, end, [[],0,0], max_dist_outdoors, 1000000,[])
-
-    return best_path[0]
 
 
 # ================================================================
@@ -287,5 +291,5 @@ class Ps2Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    pass
-    # unittest.main()
+    # pass
+    unittest.main()
