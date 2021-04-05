@@ -12,3 +12,4 @@ solve a simple optimization problem on a graph.
 2. The manipulation of list in python - pay special attention to whether the list is copied or not
 - append and += are the same: they add the item to the list, without producing a new list. 
 - using + adds the two lists and produces a new list. 
+3. How to use recursive to implement depth first algo to find the shortest path
