@@ -12,3 +12,4 @@ implement a program that uses classes to simulate robot movement.
 
 #### Learning Notes: 
 1. abstract class; inheritance
+2. how to generate random floats and random int
