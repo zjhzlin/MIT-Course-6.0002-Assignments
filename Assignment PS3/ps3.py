@@ -70,7 +70,6 @@ class Position(object):
     def __str__(self):  
         return "Position: " + str(math.floor(self.x)) + ", " + str(math.floor(self.y))
 
-
 # === Problem 1
 class RectangularRoom(object):
     """
@@ -90,10 +89,11 @@ class RectangularRoom(object):
         height: an integer > 0
         dirt_amount: an integer >= 0
         """
-        self.width = width
-        self.height = height
-        self.dirt_amount = dirt_amount
-        self.dict = {}  # store the tile dirt info into a dictionary
+        self.width = width   # immutable
+        self.height = height   # immutable
+        self.dirt_amount = dirt_amount    # immutable
+
+        self.dict = {}      # store the tile dirt info into a dictionary; value is mutable
         for i in range(width):
             for j in range(height):
                 self.dict[(i,j)] = dirt_amount
@@ -112,6 +112,7 @@ class RectangularRoom(object):
         Note: The amount of dirt on each tile should be NON-NEGATIVE.
               If the capacity exceeds the amount of dirt on the tile, mark it as 0.
         """
+        # mutate the dict
         # get the x, y position of the tile
         tile_pos_x = math.floor(pos.get_x())
         tile_pos_y = math.floor(pos.get_y())
@@ -226,7 +227,6 @@ class RectangularRoom(object):
 # room.clean_tile_at_position(p,3)
 # print(room.get_dirt_amount(1,1))
 # print(room.get_num_cleaned_tiles())
-
 
 class Robot(object):
     """
@@ -427,6 +427,7 @@ class FurnishedRoom(RectangularRoom):
         """
         Returns: a Position object; a valid random position (inside the room and not in a furnished area).
         """
+        # better to obtain the list of unfurnished tiles
         x = random.random() * self.width
         y = random.random() * self.height
         while self.is_position_furnished(Position(x, y)):    # exit condition, (x,y) not in furnished tiles
@@ -550,7 +551,7 @@ class FaultyRobot(Robot):
 
         # raise NotImplementedError
 
-# test_robot_movement(FaultyRobot, EmptyRoom)
+test_robot_movement(FaultyRobot, EmptyRoom)
 
 # === Problem 5
 # def robot_clean(robot, room):
@@ -666,5 +667,5 @@ def show_plot_room_shape(title, x_label, y_label):
     pylab.show()
 
 
-show_plot_compare_strategies('Time to clean 80% of a 20x20 room, for various numbers of robots','Number of robots','Time / steps')
-show_plot_room_shape('Time to clean 80% of a 300-tile room for various room shapes','Aspect Ratio', 'Time / steps')
+# show_plot_compare_strategies('Time to clean 80% of a 20x20 room, for various numbers of robots','Number of robots','Time / steps')
+# show_plot_room_shape('Time to clean 80% of a 300-tile room for various room shapes','Aspect Ratio', 'Time / steps')
